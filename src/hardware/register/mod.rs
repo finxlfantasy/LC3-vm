@@ -65,3 +65,13 @@ enum Conditionflags {
     ZRO = 1 << 1, // Zero
     NEG = 1 << 2, // Negative
 }
+
+pub fn update_r_cond_register(&mut self, r: u16) {
+    if self.get(r) == 0 {
+        self.update(9, Conditionflags::ZRO as u16);
+    } else if (self.get(r) >> 15) != 0 {
+    self.update(9, Conditionflags::NEG as u16);
+    } else {
+    self.update(9, Conditionflags::POS as u16);
+    } 
+}

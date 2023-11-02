@@ -59,6 +59,22 @@ pub fn execute_instruction(instr: u16, vm: &mut VM) {
         _ => {}
     }
 
+pub fn trap(instruction: u16, vm: &mut VM) {
+    println!("trap instruction: {:#018b}\n", instruction);
+
+    match instruction & 0xFF {
+        0x20 => {}
+        0x21 => {}
+        0x22 => {}
+        0x23 => {}
+        0x24 => {}
+        0x25 => {}
+        _ => {
+            process::exit(1);
+            
+        }
+    }
+}
 
     pub fn ldi(instruction: u16, vm: &mut VM) {
         let dr = (instruction >> 9) & 0x7;

@@ -58,6 +58,12 @@ pub fn execute_instruction(instr: u16, vm: &mut VM) {
         Some(OpCode::TRAP) => trap(instr, vm),
         _ => {}
     }
+pub fn add(instruction: u16, vm: &mut VM) {
+    let dr = (instruction  >> 9) & 0x7;
+
+    let sr1 = (instruction >> 6) &0x7;
+
+}
 
 pub fn trap(instruction: u16, vm: &mut VM) {
     println!("trap instruction: {:#018b}\n", instruction);
@@ -65,10 +71,26 @@ pub fn trap(instruction: u16, vm: &mut VM) {
     match instruction & 0xFF {
         0x20 => {}
         0x21 => {}
-        0x22 => {}
+        0x22 => {
+            //Puts 
+            let mut index = vm.registers.r0;
+
+            let mut c = vm.read_memory(index);
+
+            while c != 0x0000 {
+                print!("{}", as u8 as char);
+                index += 1;
+                c = vm.read_memory(index);
+        }
+        io::stdout().flush().unwrap();
+    }
         0x23 => {}
         0x24 => {}
-        0x25 => {}
+        0x25 => {
+            println!("HALT detected");
+            io::stdout().flush().expect("Failed to flush");
+            process::exit(1);
+        }
         _ => {
             process::exit(1);
             

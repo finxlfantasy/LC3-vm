@@ -63,6 +63,18 @@ pub fn add(instruction: u16, vm: &mut VM) {
 
     let sr1 = (instruction >> 6) &0x7;
 
+    let imm_flag = (instruction >> 5) & 0x1;
+    if imm_flag == 1 {
+        let im5 = sign_extend(instruction & 0x1F, 5);
+
+        let val: u32 = im5 as u32 + vm.registers.get(sr1) as u32;
+        vm.registers.update(dr, val as u16);
+    } else {
+        let s42 = instruction & 0x7;
+        let val: u32 = vm.registers.get(sr1) as u32 + vm.registers.get(sr2) as u32;
+        vm.registers.update(dr, val as u16);
+    }
+    vm.registers.update_r_cond_register(dr);
 }
 
 pub fn trap(instruction: u16, vm: &mut VM) {

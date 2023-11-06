@@ -77,6 +77,14 @@ pub fn add(instruction: u16, vm: &mut VM) {
     vm.registers.update_r_cond_register(dr);
 }
 
+pub fn not(instruction: u16, vm: &mut VM) {
+    let dr = (instruction >> 9) & 0x7;
+    let sr1 = (instruction >> 6) & 0x7;
+    vm.registers.update(dr, !vm.registers.get(sr1));
+
+    vm.registers.update_r_cond_register(dr);
+}
+
 pub fn trap(instruction: u16, vm: &mut VM) {
     println!("trap instruction: {:#018b}\n", instruction);
 

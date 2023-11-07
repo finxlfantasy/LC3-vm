@@ -85,6 +85,36 @@ pub fn not(instruction: u16, vm: &mut VM) {
     vm.registers.update_r_cond_register(dr);
 }
 
+pub fn br(instruction: u16, vm: &mut VM) {
+    let pc_offset = sign_extend((instruction) & 0x1FF, 9);
+    let cond_flag = (instruction >> 9) & 0x7;
+    if vm.registers.get_cond() & cond_flag != 0 {
+        vm.registers.update_pc(vm.registers.get_pc() + pc_offset);
+    }
+}
+
+pub fn jmp(instruction: u16, vm: &mut VM) {
+    let base_reg = (instruction >> 6) &0x7;
+    vm.registers.pc = vm.registers.get(base_reg);
+}
+
+pub fn jsr(instruction: u16, vm: &mut VM) {
+    let base_reg = (instruction >> 6) & 0x7;
+
+    let long_pc_offset = sign_extend(instruction & 0x7ff, 11);
+
+    let long_flag = (instruction >> 11) & 1;
+
+    vm.registers.r7 = vm.registers.pc;
+
+    if long_flag != 0 {
+        let val:u32 = vm.regitsers.pc as u32 + long_pc_offset as u32;
+        vm.registers.r8 = val as u16;
+    } else {
+        vm.registers.pc = vm.registers.get(base_reg);
+    }
+}
+
 pub fn trap(instruction: u16, vm: &mut VM) {
     println!("trap instruction: {:#018b}\n", instruction);
 

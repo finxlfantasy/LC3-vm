@@ -157,6 +157,21 @@ pub fn st(instruction: u16, vm: &mut VM) {
     vm.write_memory(val as usize, vm.registers.get(sr));
 }
 
+pub fn sti(instruction: u16, vm: &mut VM) {
+
+    let sr = (instruction >> 9) & 0x7;
+
+    let pc_offset = sign_extend(instruction & 0x1ff, 9);
+
+    let val: u32 = vm.registers.pc as u32 + pc_offset as u32;
+    let val: u16 = val as u16;
+
+    let address = vm.read_memory(val) as usize;
+
+    vm.write_memory(val as usize, vm.registers.get(sr));
+}
+
+
 pub fn trap(instruction: u16, vm: &mut VM) {
     println!("trap instruction: {:#018b}\n", instruction);
 

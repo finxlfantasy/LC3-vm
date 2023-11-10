@@ -115,6 +115,48 @@ pub fn jsr(instruction: u16, vm: &mut VM) {
     }
 }
 
+pub fn ld(instruction: u16, vm: &mut VM) {
+    let dr = (instruction >> 9) & 0x7;
+
+    let pc_offset = sign_extend(instruction &0x1ff, 9);
+
+    let nem: u32 = pc_offset as u32 + vm.registers.pc as u32;
+
+    let value = vm.read_memory(nem as u16);
+
+    vm.registers.update(dr, value);
+    vm.registers.update_r_cond_register(dr);
+
+}
+
+pub fn ldr(instruction: u16, vm: &mut VM) {
+    let dr = (instruction >> 9) & 0x7;
+
+    let base_reg = (instruction >> 6) &0x7;
+
+    let offset = sign_extend(instruction &0x3F, 6);
+
+    let val: u32 = vm.registers.get(base_reg) as u32 + offset as u32;
+
+    let nem_value = vm.read_memory(nem as u16).clone();
+
+    vm.registers.update(dr, nem_value);
+    vm.registers.update_r_cond_register(dr);
+
+}
+
+pub fn st(instruction: u16, vm: &mut VM) {
+
+    let sr = (instruction >> 9) & 0x7;
+
+    let pc_offset = sign_extend(instruction & 0x1ff, 9);
+
+    let val: u32 = vm.registers.pc as u32 + pc_offset as u32;
+    let val: u16 = val as u16;
+
+    vm.write_memory(val as usize, vm.registers.get(sr));
+}
+
 pub fn trap(instruction: u16, vm: &mut VM) {
     println!("trap instruction: {:#018b}\n", instruction);
 

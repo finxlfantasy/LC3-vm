@@ -19,4 +19,11 @@ impl VM {
     pub fn write_memory(&mut self, address: usize, value: u16) {
         self.memory[address] = value;
     }
+
+    pub enum MemoryMappedReg {
+        kbsr = 0xFE00,
+
+        kbdr = 0xFE02,
+    }
+
 }
